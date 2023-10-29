@@ -51,7 +51,8 @@ namespace Algorithms
 
                                 int registerytIndex = graph.Vertices.FindIndex(v => v.Ident.Equals(connectionTarget));
 
-                                if(pathRegister[i][registerytIndex] == null) // If there is not any connection registered
+                                if(pathRegister[i][registerytIndex] == null | 
+                                    float.Parse(pathRegister[i][registerytIndex].Split('/')[1]) == -1f) // If there is not any connection registered
                                 {
                                     pathRegister[i][registerytIndex] = graph.Vertices[currentCheck].Ident + "/" + connections[k].Weight;
                                 }
@@ -59,19 +60,29 @@ namespace Algorithms
                                 {
                                     pathRegister[i][registerytIndex] = graph.Vertices[currentCheck].Ident + "/" + connections[k].Weight;
                                 }
-                                // A missing Connection is usually registered with the Symbol of infinity. In my Code it's just NULL.
+                                else
+                                {
+                                    pathRegister[i][registerytIndex] = graph.Vertices[currentCheck].Ident + "/" + -1f;
+                                }
+                                // A missing Connection is usually registered with the Symbol of infinity. In my Code it's just -1.
                             }
 
                             for(int k = 0; k < pathRegister[i].Length; k++)
                             {
+                                int min = -1;
                                 if (k != currentCheck)
                                 {
-                                    char min = ;
-                                    if (float.Parse(pathRegister[i][k].Split('/')[1]) < float.Parse(pathRegister[i][].Split('/')[1]))
+                                    while (min == -1 | min == currentCheck | float.Parse(pathRegister[i][min].Split('/')[1]) == -1f)
                                     {
+                                        min = new Random().Next(graph.Length);
+                                    }
 
+                                    if (float.Parse(pathRegister[i][k].Split('/')[1]) < float.Parse(pathRegister[i][min].Split('/')[1]))
+                                    {
+                                        min = k;
                                     }
                                 }
+                                currentCheck = min;
                             }
                         }
                     }
