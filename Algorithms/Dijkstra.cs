@@ -36,7 +36,7 @@ namespace Algorithms
                 {
                     if(j == currentCheck & i == 0)
                     {
-                        pathRegister[i][j] = graph.Vertices[j].Ident + "/" + 0;
+                        pathRegister[i][j] = graph.Vertices[j].Ident + "/" + startCosts;
                     }
                     else
                     {
@@ -47,17 +47,30 @@ namespace Algorithms
                             {
                                 // Getting Target Vertice of Edge
                                 char connectionTarget = connections[k].To;
-                                if (connectionTarget == currentCheck) { connectionTarget = connections[k].From; }
+                                if (connectionTarget == graph.Vertices[currentCheck].Ident) { connectionTarget = connections[k].From; }
 
                                 int registerytIndex = graph.Vertices.FindIndex(v => v.Ident.Equals(connectionTarget));
 
-                                if(pathRegister[i][registerytIndex] == null)
+                                if(pathRegister[i][registerytIndex] == null) // If there is not any connection registered
                                 {
-                                    pathRegister[i][registerytIndex] = connectionTarget + "/" + connections[k].Weight;
+                                    pathRegister[i][registerytIndex] = graph.Vertices[currentCheck].Ident + "/" + connections[k].Weight;
                                 }
-                                else if (float.Parse(pathRegister[i][registerytIndex].Split('/')[1]) > connections[k].Weight)
+                                else if (float.Parse(pathRegister[i][registerytIndex].Split('/')[1]) > connections[k].Weight) // If there is already a connection
                                 {
-                                    pathRegister[i][registerytIndex] = connectionTarget + "/" + connections[k].Weight;
+                                    pathRegister[i][registerytIndex] = graph.Vertices[currentCheck].Ident + "/" + connections[k].Weight;
+                                }
+                                // A missing Connection is usually registered with the Symbol of infinity. In my Code it's just NULL.
+                            }
+
+                            for(int k = 0; k < pathRegister[i].Length; k++)
+                            {
+                                if (k != currentCheck)
+                                {
+                                    char min = ;
+                                    if (float.Parse(pathRegister[i][k].Split('/')[1]) < float.Parse(pathRegister[i][].Split('/')[1]))
+                                    {
+
+                                    }
                                 }
                             }
                         }
