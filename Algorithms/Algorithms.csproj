@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Algorithms.cs" />
+    <Compile Include="Dijkstra.cs" />
     <Compile Include="HeapSort.cs" />
     <Compile Include="MergeSort.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

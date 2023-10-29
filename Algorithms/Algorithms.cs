@@ -12,7 +12,7 @@ namespace Algorithms
     {
         static void Main(string[] args)
         {
-            Stopwatch sw = new Stopwatch();
+            /*Stopwatch sw = new Stopwatch();
             sw.Start();
             IComparable[] toSort = new IComparable[100000];
             Random r = new Random();
@@ -35,7 +35,9 @@ namespace Algorithms
                 Console.Write(Convert.ToInt32(toSort[i]) + " ");
             }*/
 
-            Console.ReadKey();
+            //Console.ReadKey();
+
+            // Dijkstra
         }
 
     }
