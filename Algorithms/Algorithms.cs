@@ -38,6 +38,26 @@ namespace Algorithms
             //Console.ReadKey();
 
             // Dijkstra
+            Graph mesh = new Graph();
+            mesh.AddVertice('A');
+            mesh.AddVertice('B');
+            mesh.AddVertice('C');
+            mesh.AddVertice('D');
+
+            mesh.EstablishEdge('A', 'B', 2);
+            mesh.EstablishEdge('A', 'C', 1);
+            mesh.EstablishEdge('B', 'D', 3);
+            mesh.EstablishEdge('C', 'D', 5);
+
+            Dijkstra dijkstra = new Dijkstra(mesh);
+            
+            dijkstra.Start = 'A';
+            dijkstra.End = 'D';
+
+            dijkstra.GetDijkstraRout(0);
+
+            Console.WriteLine("Finished");
+            Console.ReadKey();
         }
 
     }

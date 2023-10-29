@@ -16,12 +16,13 @@ namespace Algorithms
         {
             this.graph = mesh;
             this.pathRegister = new string[graph.Length][];
+            for(int i = 0; i < pathRegister.Length; i++) { pathRegister[i] = new string[graph.Length]; }
         }
 
         public char Start { get; set; }
         public char End { get; set; }
 
-        public /*Array*/void GetDijkstraRout(float startCosts)
+        public /*string[]*/void GetDijkstraRout(float startCosts)
         {
             if(Start == 0 | End == 0)
             {
@@ -51,8 +52,7 @@ namespace Algorithms
 
                                 int registerytIndex = graph.Vertices.FindIndex(v => v.Ident.Equals(connectionTarget));
 
-                                if(pathRegister[i][registerytIndex] == null | 
-                                    float.Parse(pathRegister[i][registerytIndex].Split('/')[1]) == -1f) // If there is not any connection registered
+                                if(pathRegister[i][registerytIndex] == null) // If there is not any connection registered
                                 {
                                     pathRegister[i][registerytIndex] = graph.Vertices[currentCheck].Ident + "/" + connections[k].Weight;
                                 }
@@ -60,34 +60,49 @@ namespace Algorithms
                                 {
                                     pathRegister[i][registerytIndex] = graph.Vertices[currentCheck].Ident + "/" + connections[k].Weight;
                                 }
-                                else
-                                {
-                                    pathRegister[i][registerytIndex] = graph.Vertices[currentCheck].Ident + "/" + -1f;
-                                }
                                 // A missing Connection is usually registered with the Symbol of infinity. In my Code it's just -1.
                             }
 
-                            for(int k = 0; k < pathRegister[i].Length; k++)
+                            /*Get the minimum of our registry in the current iteration*/
+                            int min = -1;
+                            for (int k = 0; k < pathRegister[i].Length; k++)
                             {
-                                int min = -1;
-                                if (k != currentCheck)
+                                if (k != currentCheck) // Don't check the iteration-value
                                 {
-                                    while (min == -1 | min == currentCheck | float.Parse(pathRegister[i][min].Split('/')[1]) == -1f)
+                                    if(min == -1) // Generate a random Index at the first iteration
                                     {
-                                        min = new Random().Next(graph.Length);
+                                        while (min == -1 || min == currentCheck) 
+                                        {
+                                            min = new Random().Next(graph.Length);
+                                            if (pathRegister[i][min] == null || min == k)
+                                            {
+                                                min = -1;
+                                            }
+                                        }
                                     }
 
-                                    if (float.Parse(pathRegister[i][k].Split('/')[1]) < float.Parse(pathRegister[i][min].Split('/')[1]))
+
+                                    // if the current value on index k is smaller than the value at our current min, our min get's updated.
+                                    float kw = float.PositiveInfinity, mw = float.PositiveInfinity;
+                                    if (pathRegister[i][k] != null)
+                                        kw = float.Parse(pathRegister[i][k].Split('/')[1]);
+
+                                    if(pathRegister[i][min] != null)
+                                        mw = float.Parse(pathRegister[i][min].Split('/')[1]);
+
+                                    if (kw < mw)
                                     {
                                         min = k;
                                     }
                                 }
-                                currentCheck = min;
                             }
+                            currentCheck = min;
                         }
                     }
                 }
             }
+
+            return;
         }
     }
 
@@ -100,6 +115,12 @@ namespace Algorithms
         public List<Edge> Edges { get => edges; }
 
         public int Length { get { return vertices.Count; } }
+
+        public Graph()
+        {
+            vertices = new List<Vertice>();
+            edges = new List<Edge>();
+        }
 
         public void AddVertice(char ident)
         {
