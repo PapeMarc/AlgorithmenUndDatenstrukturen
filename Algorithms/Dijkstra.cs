@@ -9,115 +9,79 @@ namespace Algorithms
 {
     public class Dijkstra
     {
-        /* A B C D Z
-        A->B&C
-        B->A&Z
-        C->A&D
-        D->C&Z
-        */
-
-        private char start, target;
         private Graph graph;
+        private string[] pathRegister;
 
-        private Vertice currentFocus;
-        private List<Vertice> toCheckNext;
-
-        private List<Vertice> checkedAlready;
-
-        private Dictionary<char,string> finalRoutes;
-
-        public Dijkstra(Graph g)
+        public Dijkstra(Graph mesh)
         {
-            this.graph = g;
+            this.graph = mesh;
+            this.pathRegister = new string[graph.LengthVertices];
         }
 
-        public string GetRout(char Start, char Target)
-        {
-            this.start = Start;
-            this.target = Target;
-            
-            finalRoutes = new Dictionary<char,string>();
-            for(int i = 0; i < graph.Length; i++)
-            {
-                finalRoutes.Add(graph.Storage[i].Ident, "notAquired");
-            }
-
-            // Wurde der Weg schonmal ermittelt, wird auf eine erneute Pruefung verzichtet.
-            if (finalRoutes[Target] != "notAquired")
-            {
-                return finalRoutes[Target];
-            }
-
-            finalRoutes[Start] = "S0";
-            CheckVertices(Start);
-        }
-
-        private void CheckVertices(char toCheck)
-        {
-            currentFocus = graph.Storage.Find(v => v.Ident == toCheck);
-            List<string> neighbours = new List<string>();
-            foreach(KeyValuePair<char,float> kvp in currentFocus.ConnectedVertices)
-            {
-                neighbours.Add("" + kvp.Key + kvp.Value);
-            }
-
-            foreach(string s in neighbours)
-            {
-
-                if (finalRoutes.ContainsKey(s[0]))
-                {
-                    if (finalRoutes[s[0]])
-                }
-                else
-                {
-                    finalRoutes[s[0]] = ;
-                }
-            }
-
-        }
+        public char Start { get; set; }
+        public char End { get; set; }
     }
 
     public class Graph
     {
-        private List<Vertice> graph; 
-        public Graph()
-        {
-            graph = new List<Vertice>();
-        }
+        private List<Vertice> vertices;
+        private List<Edge> edges;
 
-        public int Length { get { return graph.Count; } }
+        public List<Vertice> Vertices { get => vertices; }
+        public List<Edge> Edges { get => edges; }
 
-        public List<Vertice> Storage => graph;
+        public int LengthVertices { get { return vertices.Count; } }
+        public int LengthEdges { get { return edges.Count; } }
 
         public void AddVertice(char ident)
         {
-            graph.Add(new Vertice(ident));
+            if (vertices.Find(v => v.Ident.Equals(ident)) is null){
+                vertices.Add(new Vertice(ident));
+                return;
+            }
+            throw new Exception("Tried to add a Vertice, that already exists.");
         }
 
-        public void ConnectVertices(float costs, char verticeIdent_1, char verticeIdent_2)
+        public void EstablishEdge(char identFrom, char identTo, float weight)
         {
-            graph.Find(v => v.Ident == verticeIdent_1).AddConnectedVertice(verticeIdent_2, costs);
-            graph.Find(v => v.Ident == verticeIdent_2).AddConnectedVertice(verticeIdent_1, costs);
+            Edge candidate = edges.Find(e => e.From == identFrom & e.To == identTo);
+            if (candidate != null)
+            {
+                candidate.Weight = weight;
+                return;
+            }
+            else
+            {
+                edges.Add(new Edge(identFrom, identTo,weight));
+                return;
+            }
         }
     }
 
-    public class Vertice // Klasse Edge mit from, to und den costs ist besser, nachtragen!
+    public class Vertice
     {
-        private Dictionary<char,float> connectedVertices; // Identifier, Edge-weight
         private char ident;
-
-        public char Ident { get { return ident; } }
-        public Dictionary<char,float> ConnectedVertices {  get { return connectedVertices; } }
-
-        public Vertice(char identifier)
+        public char Ident { get => ident; }
+        public Vertice(char ident)
         {
-            this.connectedVertices = new Dictionary<char, float>();
-            this.ident = identifier;
+            this.ident = ident;
         }
+    }
 
-        public void AddConnectedVertice(char ident, float costs)
+    public class Edge
+    {
+        private char from, to;
+
+        public char From { get => from;}
+        public char To { get => to;}
+
+        public float Weight { get; set; }
+
+        public Edge(char from, char to, float weight)
         {
-            connectedVertices.Add(ident, Math.Abs(costs));
+            this.from = from;
+            this.to = to;
+            this.Weight = weight;
         }
     }
 }
