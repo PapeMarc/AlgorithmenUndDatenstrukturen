@@ -10,16 +10,61 @@ namespace Algorithms
     public class Dijkstra
     {
         private Graph graph;
-        private string[] pathRegister;
+        private string[][] pathRegister;
 
         public Dijkstra(Graph mesh)
         {
             this.graph = mesh;
-            this.pathRegister = new string[graph.LengthVertices];
+            this.pathRegister = new string[graph.Length][];
         }
 
         public char Start { get; set; }
         public char End { get; set; }
+
+        public /*Array*/void GetDijkstraRout(float startCosts)
+        {
+            if(Start == 0 | End == 0)
+            {
+                throw new Exception("No Start or Endpoint was set.");
+            }
+
+            int currentCheck = graph.Vertices.FindIndex(v => v.Ident == Start);
+
+            for(int i = 0; i < pathRegister.Length; i++) // check every Vertice
+            {
+                for(int j = 0; j < pathRegister.Length; j++) // check all Edges and new Connections for Registery
+                {
+                    if(j == currentCheck & i == 0)
+                    {
+                        pathRegister[i][j] = graph.Vertices[j].Ident + "/" + 0;
+                    }
+                    else
+                    {
+                        List<Edge> connections = graph.Edges.FindAll(edge => edge.From == graph.Vertices[currentCheck].Ident | edge.To == graph.Vertices[currentCheck].Ident);
+                        if(connections.Count > 0)
+                        {
+                            for(int k = 0; k < connections.Count; k++) // for each Connection
+                            {
+                                // Getting Target Vertice of Edge
+                                char connectionTarget = connections[k].To;
+                                if (connectionTarget == currentCheck) { connectionTarget = connections[k].From; }
+
+                                int registerytIndex = graph.Vertices.FindIndex(v => v.Ident.Equals(connectionTarget));
+
+                                if(pathRegister[i][registerytIndex] == null)
+                                {
+                                    pathRegister[i][registerytIndex] = connectionTarget + "/" + connections[k].Weight;
+                                }
+                                else if (float.Parse(pathRegister[i][registerytIndex].Split('/')[1]) > connections[k].Weight)
+                                {
+                                    pathRegister[i][registerytIndex] = connectionTarget + "/" + connections[k].Weight;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public class Graph
@@ -30,8 +75,7 @@ namespace Algorithms
         public List<Vertice> Vertices { get => vertices; }
         public List<Edge> Edges { get => edges; }
 
-        public int LengthVertices { get { return vertices.Count; } }
-        public int LengthEdges { get { return edges.Count; } }
+        public int Length { get { return vertices.Count; } }
 
         public void AddVertice(char ident)
         {
